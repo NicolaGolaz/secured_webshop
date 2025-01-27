@@ -1,13 +1,23 @@
+const fs = require("fs");
+const https = require("https");
 const express = require("express");
+const path = require("path");
 
-
+// explique le code ci-dessous
+// const app = express(); // Création d'une application express
+// const userRoute = require("./routes/User"); // Importation de la route User
+// app.use("/user", userRoute); // Utilisation de la route User sur le chemin /user
 const app = express();
-const userRoute = require('./routes/User');
-app.use('/user', userRoute);
+const userRoute = require("./routes/User");
+app.use("/user", userRoute);
 
+// Configuration HTTPS
+const options = {
+  key: fs.readFileSync("./certificat/key.pem"), // Chemin vers la clé privée
+  cert: fs.readFileSync("./certificat/certificat.pem"), // Chemin vers le certificat
+};
 
-
-// Démarrage du serveur
-app.listen(8080, () => {
-    console.log('Server running on port 8080');
+// Lancer le serveur HTTPS
+https.createServer(options, app).listen(443, () => {
+  console.log("Serveur HTTPS démarré sur https://localhost:443");
 });
