@@ -1,4 +1,7 @@
 const mysql = require("mysql2");
+const bcrypt = require("bcrypt");
+const { generateToken } = require("../auth/jwt");
+const jwt = require("jsonwebtoken");
 
 // Création de la connection à la base de données
 const connection = mysql.createConnection({
@@ -25,17 +28,24 @@ const connectionToDatabase = async () => {
 };
 
 // Fonction permettant de créer un utilisateur
-const createUser = (username, password) => {
-  return new Promise((resolve, reject) => {
+const createUser = async (username, password) => {
+  return new Promise(async (resolve, reject) => {
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const insertQuery =
       "INSERT INTO t_users (username, password) VALUES (?, ?)";
-    connection.query(insertQuery, [username, password], (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
+    connection.query(
+      insertQuery,
+      [username, hashedPassword],
+      (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
       }
-    });
+    );
   });
 };
 
@@ -53,9 +63,28 @@ const findUserByUsername = (username) => {
   });
 };
 
+// Fonction permettant de logger un utilisateur
+const logUser = async (username, password) => {
+  return new Promise(async (resolve, reject) => {
+    const user = await findUserByUsername(username);
+    if (!user) {
+      reject("User not found");
+    } else {
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        const token = generateToken(user);
+        resolve(user);
+      } else {
+        reject("Wrong password");
+      }
+    }
+  });
+};
+
 module.exports = {
   connection,
   connectionToDatabase,
   createUser,
   findUserByUsername,
+  logUser,
 };

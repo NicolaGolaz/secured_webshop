@@ -1,4 +1,5 @@
 const express = require("express");
+const { authenticateToken } = require("../auth/jwt");
 
 const router = express.Router();
 const controller = require("../controllers/UserController");
@@ -11,6 +12,8 @@ router.get("/register", controller.register);
 
 // Route permettant de connecter un utilisateur
 router.post("/login", controller.logUser);
+
+router.get("/homepage", authenticateToken, controller.homepage);
 
 // Route permettant d'inscrire un utilisateur
 router.post("/register", controller.registerUser);
