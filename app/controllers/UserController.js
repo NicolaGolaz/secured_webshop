@@ -1,6 +1,9 @@
 const path = require("../server");
 const { createUser } = require("../db/mysql");
 const { logUser } = require("../db/mysql");
+const { generateToken } = require("../auth/jwt");
+const bcrypt = require("bcrypt");
+
 module.exports = {
   login: (req, res) => {
     res.sendFile("view/login.html", { root: "." });
@@ -8,13 +11,22 @@ module.exports = {
   register: (req, res) => {
     res.sendFile("view/register.html", { root: "." });
   },
+
   logUser: async (req, res) => {
     try {
-      await logUser(req.body.username, req.body.password);
-      res.json(token);
-      res.redirect("/homepage");
+      const user = await logUser(req.body.username);
+      console.log(user);
+      if (user && bcrypt.compareSync(req.body.password, user.password)) {
+        const token = generateToken(user);
+        console.log(token);
+        res.setHeader('authorization', token);
+        console.log(res);
+        res.redirect("/homepage");
+      } else {
+        res.status(401).send("Invalid username or password");
+      }
     } catch (error) {
-      res.status(500).send("Error connecting user");
+      res.status(500).send("Error blud");
     }
   },
 

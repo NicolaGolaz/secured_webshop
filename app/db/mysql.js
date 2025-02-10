@@ -64,19 +64,13 @@ const findUserByUsername = (username) => {
 };
 
 // Fonction permettant de logger un utilisateur
-const logUser = async (username, password) => {
+const logUser = async (username) => {
   return new Promise(async (resolve, reject) => {
     const user = await findUserByUsername(username);
     if (!user) {
       reject("User not found");
     } else {
-      const match = await bcrypt.compare(password, user.password);
-      if (match) {
-        const token = generateToken(user);
-        resolve(user);
-      } else {
-        reject("Wrong password");
-      }
+      resolve(user);
     }
   });
 };
