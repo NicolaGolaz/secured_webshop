@@ -6,9 +6,6 @@ const { connectionToDatabase } = require("./db/mysql");
 const cookieParser = require("cookie-parser");
 
 // explique le code ci-dessous
-// const app = express(); // Création d'une application express
-// const userRoute = require("./routes/User"); // Importation de la route User
-// app.use("/user", userRoute); // Utilisation de la route User sur le chemin /user
 const app = express();
 app.use(cookieParser());
 const userRoute = require("./routes/User");

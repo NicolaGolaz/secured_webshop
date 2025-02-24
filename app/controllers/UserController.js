@@ -34,12 +34,16 @@ module.exports = {
   registerUser: async (req, res) => {
     try {
       await createUser(req.body.username, req.body.password);
-      res.send("User created");
+      console.log("User created");
+      res.sendFile("view/login.html", { root: "." });
     } catch (error) {
       res.status(500).send("Error creating user");
     }
   },
   homepage: (req, res) => {
     res.sendFile("view/homepage.html", { root: "." });
+  },
+  profile: (req, res) => {
+    res.sendFile("view/profile.html", { root: "." });
   },
 };

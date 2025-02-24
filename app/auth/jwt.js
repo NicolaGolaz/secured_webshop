@@ -2,9 +2,13 @@ const jwt = require("jsonwebtoken");
 const secretKey = require("./secretKey");
 
 function generateToken(user) {
-  return jwt.sign({ id: user.id, username: user.username }, secretKey, {
-    expiresIn: "1h",
-  });
+  return jwt.sign(
+    { id: user.id, username: user.username, isAdmin: user.isAdmin },
+    secretKey,
+    {
+      expiresIn: "1h",
+    }
+  );
 }
 
 function authenticateToken(req, res, next) {
@@ -14,7 +18,6 @@ function authenticateToken(req, res, next) {
   jwt.verify(token, secretKey, (err, user) => {
     if (err) return res.status(403).send("Invalid token");
     req.user = user;
-    console.log("Token Ok", token);
     next();
   });
 }

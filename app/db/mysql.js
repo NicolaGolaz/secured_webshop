@@ -74,10 +74,23 @@ const logUser = async (username) => {
   });
 };
 
+function getAllUsers() {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "SELECT username, password FROM t_users",
+      (error, results) => {
+        if (error) return reject(error);
+        resolve(results);
+      }
+    );
+  });
+}
+
 module.exports = {
   connection,
   connectionToDatabase,
   createUser,
   findUserByUsername,
   logUser,
+  getAllUsers,
 };

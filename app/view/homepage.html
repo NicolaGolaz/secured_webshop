@@ -15,6 +15,8 @@
           <li><a href="products.html">Products</a></li>
           <li><a href="about.html">About Us</a></li>
           <li><a href="contact.html">Contact</a></li>
+          <li><a href="/profile">Profile</a></li>
+          <li><button id="logout-button">Logout</button></li>
         </ul>
       </nav>
     </header>
@@ -29,5 +31,24 @@
     <footer>
       <p>&copy; 2023 Secured Webshop. All rights reserved.</p>
     </footer>
+
+    <script>
+      document
+        .getElementById("logout-button")
+        .addEventListener("click", function () {
+          fetch("/logout", {
+            method: "POST",
+            credentials: "same-origin",
+          })
+            .then((response) => {
+              if (response.redirected) {
+                window.location.href = response.url;
+              }
+            })
+            .catch((error) => {
+              console.error("Error during logout:", error);
+            });
+        });
+    </script>
   </body>
 </html>
