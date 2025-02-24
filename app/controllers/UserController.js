@@ -19,14 +19,14 @@ module.exports = {
       if (user && bcrypt.compareSync(req.body.password, user.password)) {
         const token = generateToken(user);
         console.log(token);
-        res.setHeader('authorization', token);
+        res.cookie("token", token, { httpOnly: true, secure: true });
         console.log(res);
         res.redirect("/homepage");
       } else {
         res.status(401).send("Invalid username or password");
       }
     } catch (error) {
-      res.status(500).send("Error blud");
+      res.status(500).send("Error login");
     }
   },
 

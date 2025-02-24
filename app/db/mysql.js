@@ -1,6 +1,5 @@
 const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
-const { generateToken } = require("../auth/jwt");
 const jwt = require("jsonwebtoken");
 
 // Création de la connection à la base de données
