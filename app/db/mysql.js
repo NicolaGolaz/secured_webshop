@@ -26,6 +26,26 @@ const connectionToDatabase = async () => {
   });
 };
 
+const createUsersTableIfNotExists = async () => {
+  return new Promise((resolve, reject) => {
+    const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS t_users (
+        username VARCHAR(50) NOT NULL UNIQUE,
+        password VARCHAR(70) NOT NULL UNIQUE,
+        isAdmin BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+    connection.query(createTableQuery, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+};
+
 // Fonction permettant de créer un utilisateur
 const createUser = async (username, password) => {
   return new Promise(async (resolve, reject) => {
@@ -89,6 +109,7 @@ function getAllUsers() {
 module.exports = {
   connection,
   connectionToDatabase,
+  createUsersTableIfNotExists,
   createUser,
   findUserByUsername,
   logUser,
