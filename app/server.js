@@ -2,8 +2,11 @@ const fs = require("fs");
 const https = require("https");
 const express = require("express");
 const path = require("path");
-const { connectionToDatabase } = require("./db/mysql");
-const { createUsersTableIfNotExists } = require("./db/mysql");
+const {
+  connectionToDatabase,
+  createUsersTableIfNotExists,
+  createTwoUsers,
+} = require("./db/mysql");
 const cookieParser = require("cookie-parser");
 
 // explique le code ci-dessous
@@ -24,7 +27,8 @@ const startServer = async () => {
   try {
     await connectionToDatabase();
     await createUsersTableIfNotExists();
-    https.createServer(options, app).listen(443, () => {
+    await createTwoUsers();
+    await https.createServer(options, app).listen(443, () => {
       console.log("Serveur HTTPS démarré sur https://localhost:443");
     });
   } catch (error) {

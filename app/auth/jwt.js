@@ -13,7 +13,10 @@ function generateToken(user) {
 
 function authenticateToken(req, res, next) {
   const token = req.cookies.token;
-  if (!token) return res.status(401).send("Access denied");
+  if (!token) {
+    // res.status(401).send("Access denied");
+    res.redirect("/login");
+  }
 
   jwt.verify(token, secretKey, (err, user) => {
     if (err) return res.status(403).send("Invalid token");

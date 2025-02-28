@@ -47,16 +47,16 @@ const createUsersTableIfNotExists = async () => {
 };
 
 // Fonction permettant de créer un utilisateur
-const createUser = async (username, password) => {
+const createUser = async (username, password, isAdmin = false) => {
   return new Promise(async (resolve, reject) => {
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     const hashedPassword = await bcrypt.hash(password, salt);
     const insertQuery =
-      "INSERT INTO t_users (username, password) VALUES (?, ?)";
+      "INSERT INTO t_users (username, password, isAdmin) VALUES (?, ?, ?)";
     connection.query(
       insertQuery,
-      [username, hashedPassword],
+      [username, hashedPassword, isAdmin],
       (err, results) => {
         if (err) {
           reject(err);
@@ -106,6 +106,19 @@ function getAllUsers() {
   });
 }
 
+const createTwoUsers = async () => {
+  try {
+    await createUser("admin", "admin", true);
+    await createUser("user", "user", false);
+    console.log("Users created successfully");
+  } catch (error) {
+    console.error("Error creating users:", error);
+  }
+};
+
+// Appel de la fonction pour créer les utilisateurs
+createTwoUsers();
+
 module.exports = {
   connection,
   connectionToDatabase,
@@ -114,4 +127,5 @@ module.exports = {
   findUserByUsername,
   logUser,
   getAllUsers,
+  createTwoUsers,
 };
