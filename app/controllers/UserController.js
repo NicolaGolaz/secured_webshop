@@ -3,6 +3,7 @@ const { createUser } = require("../db/mysql");
 const { logUser } = require("../db/mysql");
 const { generateToken } = require("../auth/jwt");
 const bcrypt = require("bcrypt");
+const { searchUserByUsername } = require("../db/mysql");
 
 module.exports = {
   login: (req, res) => {
@@ -45,5 +46,21 @@ module.exports = {
   },
   profile: (req, res) => {
     res.sendFile("view/profile.html", { root: "." });
+  },
+  searchUserByUsername: async (req, res) => {
+    const username = req.query.username;
+    if (!username) {
+      return res.status(400).json({ error: "Username is required" });
+    }
+
+    try {
+      const users = await searchUserByUsername(username);
+      if (users.length === 0) {
+        return res.status(404).json({ error: "No users found" });
+      }
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
   },
 };

@@ -116,6 +116,19 @@ const createTwoUsers = async () => {
   }
 };
 
+const searchUserByUsername = (username) => {
+  return new Promise((resolve, reject) => {
+    const selectQuery = "SELECT * FROM t_users WHERE username LIKE ?";
+    connection.query(selectQuery, [`%${username}%`], (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+};
+
 // Appel de la fonction pour créer les utilisateurs
 createTwoUsers();
 
@@ -128,4 +141,5 @@ module.exports = {
   logUser,
   getAllUsers,
   createTwoUsers,
+  searchUserByUsername,
 };

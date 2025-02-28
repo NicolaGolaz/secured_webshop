@@ -40,22 +40,23 @@
       .admin-section th {
         background-color: #f2f2f2;
       }
+      .search-results {
+        margin-top: 20px;
+        text-align: left;
+      }
+      .search-results p {
+        margin: 5px 0;
+      }
     </style>
   </head>
   <body>
     <div class="profile-container">
       <h1>Bonjour, <span id="username">Utilisateur</span>!</h1>
       <div id="admin-section" class="admin-section" style="display: none">
-        <h2>Liste des utilisateurs</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Nom d'utilisateur</th>
-              <th>Mot de passe</th>
-            </tr>
-          </thead>
-          <tbody id="user-list"></tbody>
-        </table>
+        <h2>Rechercher un utilisateur</h2>
+        <input type="text" id="searchUsername" placeholder="Enter username" />
+        <button id="searchButton">Search</button>
+        <div id="searchResults" class="search-results"></div>
       </div>
     </div>
 
@@ -67,21 +68,67 @@
           document.getElementById("username").textContent = data.username;
           if (data.users) {
             document.getElementById("admin-section").style.display = "block";
-            const userList = document.getElementById("user-list");
-            data.users.forEach((user) => {
-              const row = document.createElement("tr");
-              const usernameCell = document.createElement("td");
-              usernameCell.textContent = user.username;
-              const passwordCell = document.createElement("td");
-              passwordCell.textContent = user.password;
-              row.appendChild(usernameCell);
-              row.appendChild(passwordCell);
-              userList.appendChild(row);
-            });
           }
         })
         .catch((error) => {
           console.error("Error fetching username:", error);
+        });
+
+      // Ajouter un gestionnaire d'événements pour le bouton de recherche
+      document
+        .getElementById("searchButton")
+        .addEventListener("click", async () => {
+          const username = document.getElementById("searchUsername").value;
+          if (!username) {
+            alert("Please enter a username");
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              `/api/searchUser?username=${username}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("No users found or access denied");
+            }
+
+            const users = await response.json();
+            const searchResults = document.getElementById("searchResults");
+            searchResults.innerHTML = ""; // Vider les résultats précédents
+
+            // Afficher les informations des utilisateurs
+            users.forEach((user) => {
+              const userContainer = document.createElement("div");
+              userContainer.classList.add("user-container");
+
+              const usernameElement = document.createElement("p");
+              usernameElement.textContent = `Nom d'utilisateur: ${user.username}`;
+              userContainer.appendChild(usernameElement);
+
+              const isAdminElement = document.createElement("p");
+              isAdminElement.textContent = `Admin: ${
+                user.isAdmin ? "Oui" : "Non"
+              }`;
+              userContainer.appendChild(isAdminElement);
+
+              const createdAtElement = document.createElement("p");
+              createdAtElement.textContent = `Créé le: ${new Date(
+                user.created_at
+              ).toLocaleString()}`;
+              userContainer.appendChild(createdAtElement);
+
+              searchResults.appendChild(userContainer);
+            });
+          } catch (error) {
+            alert(error.message);
+          }
         });
     </script>
   </body>

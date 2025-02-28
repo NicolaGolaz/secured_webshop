@@ -37,4 +37,12 @@ router.post("/logout", (req, res) => {
   res.redirect("/login");
 });
 
+router.get("/api/searchUser", authenticateToken, async (req, res) => {
+  if (req.user.isAdmin) {
+    await controller.searchUserByUsername(req, res);
+  } else {
+    res.status(403).json({ error: "Access denied" });
+  }
+});
+
 module.exports = router;
