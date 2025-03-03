@@ -3,51 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
     <title>Profil Utilisateur</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-      .profile-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-      }
-      .profile-container h1 {
-        color: #333;
-      }
-      .admin-section {
-        margin-top: 20px;
-      }
-      .admin-section table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      .admin-section th,
-      .admin-section td {
-        border: 1px solid #ddd;
-        padding: 8px;
-      }
-      .admin-section th {
-        background-color: #f2f2f2;
-      }
-      .search-results {
-        margin-top: 20px;
-        text-align: left;
-      }
-      .search-results p {
-        margin: 5px 0;
-      }
-    </style>
   </head>
   <body>
     <div class="profile-container">
@@ -109,17 +66,17 @@
               userContainer.classList.add("user-container");
 
               const usernameElement = document.createElement("p");
-              usernameElement.textContent = `Nom d'utilisateur: ${user.username}`;
+              usernameElement.innerHTML = `<span>Nom d'utilisateur:</span> ${user.username}`;
               userContainer.appendChild(usernameElement);
 
               const isAdminElement = document.createElement("p");
-              isAdminElement.textContent = `Admin: ${
+              isAdminElement.innerHTML = `<span>Admin:</span> ${
                 user.isAdmin ? "Oui" : "Non"
               }`;
               userContainer.appendChild(isAdminElement);
 
               const createdAtElement = document.createElement("p");
-              createdAtElement.textContent = `Créé le: ${new Date(
+              createdAtElement.innerHTML = `<span>Créé le:</span> ${new Date(
                 user.created_at
               ).toLocaleString()}`;
               userContainer.appendChild(createdAtElement);

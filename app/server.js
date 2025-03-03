@@ -16,6 +16,9 @@ const userRoute = require("./routes/User");
 app.use(express.urlencoded({ extended: true })); // Pour parser les données des formulaires
 app.use("/", userRoute);
 
+// Servir les fichiers statiques depuis le dossier "view"
+app.use(express.static(path.join(__dirname, "view")));
+
 // Configuration HTTPS
 const options = {
   key: fs.readFileSync("./certificat/key.pem"), // Chemin vers la clé privée
