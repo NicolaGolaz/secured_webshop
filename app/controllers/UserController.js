@@ -41,12 +41,15 @@ module.exports = {
       res.status(500).send("Error creating user");
     }
   },
+
   homepage: (req, res) => {
     res.sendFile("view/homepage.html", { root: "." });
   },
+
   profile: (req, res) => {
     res.sendFile("view/profile.html", { root: "." });
   },
+
   searchUserByUsername: async (req, res) => {
     const username = req.query.username;
     if (!username) {
